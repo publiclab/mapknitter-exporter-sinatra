@@ -35,16 +35,27 @@ post '/export' do
   String @data[0]['image_file_name']
 
   export = Export.new
+
+  # each image will be:
+  # {
+  #   "cm_per_pixel":4.99408,
+  #   "id":306187, // some unique id
+  #   "nodes":[ 
+  #     {"id":2593754,"lat":"-37.7664063648","lon":"144.9828654528"},
+  #     {"id":2593755,"lat":"-37.7650239004","lon":"144.9831980467"},
+  #     {"id":2593756,"lat":"-37.7652020107","lon":"144.9844533205"},
+  #     {"id":2593757,"lat":"-37.7665844718","lon":"144.9841207266"}
+  #   ],
+  #   "src":"https://s3.amazonaws.com/grassrootsmapping/warpables/306187/DJI_1207.JPG",
+  # }
   
+  # simplified this because of https://github.com/publiclab/mapknitter-exporter/pull/6... it won't work yet though
   MapKnitterExporter.run_export(
-      params[:user_id],
-      params[:resolution], # different from resolution?
+      @data['user_id'],
+      @data['resolution'],
       export,
-      params[:id],
-      params[:slug],
-      params[:root], # this will be the URL eventually so maybe we can fill it from the Sinatra equiv of Rails.root?
-      params[:scale],
-      [image], # TODO: these images need a special format like https://github.com/publiclab/mapknitter-exporter/blob/bf375b6f2cb09070503f523d24ba803936144875/test/exporter_test.rb#L15-L39
+      @data['id'],
+      @data['images'], # TODO: these images need a special format like https://github.com/publiclab/mapknitter-exporter/blob/bf375b6f2cb09070503f523d24ba803936144875/test/exporter_test.rb#L15-L39
       ''
     )
 end
