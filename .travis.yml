@@ -1,0 +1,9 @@
+sudo: required
+services:
+  - docker
+
+install:
+    docker build -t mapknitter-exporter:latest
+
+script:
+    docker run mapknitter-exporter rspec
