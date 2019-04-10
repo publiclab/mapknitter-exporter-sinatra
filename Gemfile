@@ -16,7 +16,7 @@
 source "https://rubygems.org"
 
 gem "sinatra"
-gem "mapknitter-exporter"
+gem "mapknitter-exporter", git: 'https://github.com/publiclab/mapknitter-exporter'
 # [END gae_flex_quickstart_dependencies]
 
 group :test do
