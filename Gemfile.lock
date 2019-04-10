@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/publiclab/mapknitter-exporter
+  revision: 5eda323a580e4052eadeced548336dcf25daaf80
+  branch: add_cartagen
+  glob: *.gemspec
+  specs:
+    mapknitter-exporter (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -32,6 +40,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  mapknitter-exporter!
   rack-test
   rspec
   sinatra

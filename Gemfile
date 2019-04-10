@@ -16,7 +16,7 @@
 source "https://rubygems.org"
 
 gem "sinatra"
-gem "mapknitter-exporter", git: 'https://github.com/publiclab/mapknitter-exporter'
+gem "mapknitter-exporter", git: 'https://github.com/publiclab/mapknitter-exporter', branch: 'add_cartagen', glob: '*.gemspec'
 # [END gae_flex_quickstart_dependencies]
 
 group :test do
