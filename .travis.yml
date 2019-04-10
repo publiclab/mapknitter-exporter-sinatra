@@ -6,4 +6,4 @@ install:
     docker build . -t mapknitter-exporter:latest
 
 script:
-    docker run mapknitter-exporter rspec
+    docker run mapknitter-exporter bundle exec rspec
