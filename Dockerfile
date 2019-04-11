@@ -9,7 +9,7 @@ RUN apt-get update -qq && apt-get install -y gdal-bin ruby imagemagick ruby-sina
 # Install production dependencies.
 WORKDIR /app
 COPY Gemfile Gemfile.lock ./
-ENV BUNDLE_FROZEN=true
+#ENV BUNDLE_FROZEN=true ## ?
 RUN bundle install
 
 # Copy local code to the container image.
