@@ -6,17 +6,13 @@ MAINTAINER Sebastian Silva <sebastian@fuentelibre.org>
 # Install the application.
 RUN apt-get update -qq && apt-get install -y gdal-bin ruby imagemagick ruby-sinatra ruby-kramdown bundler git
 
-# Externally accessible data is by default put in /data
-# WORKDIR /data
-# VOLUME ["/data"]
-
-# Output version and capabilities by default.
-# CMD gdalinfo --version && gdalinfo --formats && ogrinfo --formats
-
-ADD . /app
+# Install production dependencies.
 WORKDIR /app
-
-# Install bundle of gems
+COPY Gemfile Gemfile.lock ./
+ENV BUNDLE_FROZEN=true
 RUN bundle install
 
-CMD ruby app.rb -o 0.0.0.0 -p 80
+# Copy local code to the container image.
+COPY . .
+
+CMD bundle exec ruby app.rb -o 0.0.0.0 -p $PORT
