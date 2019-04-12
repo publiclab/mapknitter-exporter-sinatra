@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/publiclab/mapknitter-exporter
-  revision: 480cc2bca5a23454967caed2221a2e44a1ac309d
-  branch: add_cartagen
+  revision: 9f09720fc6661937416249c09b290ae86d678c1e
+  branch: main
   glob: *.gemspec
   specs:
     mapknitter-exporter (0.0.1)
