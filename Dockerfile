@@ -4,16 +4,15 @@ FROM debian:buster
 MAINTAINER Sebastian Silva <sebastian@fuentelibre.org>
 
 # Install the application.
-RUN apt-get update -qq && apt-get install -y gdal-bin ruby imagemagick ruby-sinatra ruby-kramdown
+RUN apt-get update -qq && apt-get install -y gdal-bin ruby imagemagick ruby-sinatra ruby-kramdown bundler git
 
-# Externally accessible data is by default put in /data
-# WORKDIR /data
-# VOLUME ["/data"]
-
-# Output version and capabilities by default.
-# CMD gdalinfo --version && gdalinfo --formats && ogrinfo --formats
-
+# Install production dependencies.
 ADD . /app
 WORKDIR /app
+ENV BUNDLE_FROZEN=true
+RUN bundle install
 
-CMD ruby app.rb -o 0.0.0.0 -p 80
+# Copy local code to the container image.
+
+
+CMD bundle exec ruby app.rb -o 0.0.0.0 -p $PORT

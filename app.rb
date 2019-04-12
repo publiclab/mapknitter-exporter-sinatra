@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "mapknitterExporter"
 require "sinatra"
 require "json"
 
@@ -31,4 +32,42 @@ post '/export' do
   STDERR.puts "Uploading file, original name #{name.inspect}"
   @data = JSON.parse(tmpfile.read)
   String @data[0]['image_file_name']
+
+  export = Export.new
+
+  # each image will be:
+  # {
+  #   "cm_per_pixel":4.99408,
+  #   "id":306187, // some unique id
+  #   "nodes":[ 
+  #     {"id":2593754,"lat":"-37.7664063648","lon":"144.9828654528"},
+  #     {"id":2593755,"lat":"-37.7650239004","lon":"144.9831980467"},
+  #     {"id":2593756,"lat":"-37.7652020107","lon":"144.9844533205"},
+  #     {"id":2593757,"lat":"-37.7665844718","lon":"144.9841207266"}
+  #   ],
+  #   "src":"https://s3.amazonaws.com/grassrootsmapping/warpables/306187/DJI_1207.JPG",
+  # }
+  
+  # simplified this because of https://github.com/publiclab/mapknitteexporter/pull/6... it won't work yet though
+  MapKnitterExporter.run_export(
+      @data[0]['id'],
+      @data[0]['height'],
+      export,
+      @data[0]['map_id'],
+      @data[0]['images'], # TODO: these images need a special format like https://github.com/publiclab/mapknitter-exporter/blob/bf375b6f2cb09070503f523d24ba803936144875/test/exporter_test.rb#L15-L39
+      ''
+    )
+end
+
+
+class Export
+
+  attr_accessor :status, :tms, :geotiff, :zip, :jpg # these will be updated with i.e. export.tms = "/path"
+
+  def save
+    # need to save status.json file with above properties as strings
+    puts "saved"
+    return true
+  end
+
 end

@@ -12,14 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_flex_quickstart_dependencies]
-source "https://rubygems.org"
+require_relative "../app.rb"
+require "rspec"
+require "rack/test"
 
-gem "sinatra"
-gem "mapknitter-exporter", git: 'https://github.com/publiclab/mapknitter-exporter', branch: 'add_cartagen', glob: '*.gemspec'
-# [END gae_flex_quickstart_dependencies]
+describe "Mapknitter Exporter" do
+  include Rack::Test::Methods
 
-group :test do
-  gem "rspec"
-  gem "rack-test"
+  def app
+    Sinatra::Application
+  end
+
+  it "displays Mapknitter Exporter text" do
+    get "/"
+    expect(last_response.body).to match("Mapknitter Exporter")
+  end
 end
