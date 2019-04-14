@@ -63,7 +63,7 @@ end
 
 class Export
 
-  attr_accessor :status, :tms, :geotiff, :zip, :jpg # these will be updated with i.e. export.tms = "/path"
+  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel
 
   def save
     # need to save status.json file with above properties as strings
