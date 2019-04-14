@@ -49,12 +49,12 @@ post '/export' do
   # }
 
   MapKnitterExporter.run_export(
-    @data[0]['id'],
+    @data[0]['id'], # sources from first image
     @data[0]['cm_per_pixel'],
     export,
     @data[0]['map_id'],
     ".",
-    @data, # TODO: these images need a special format like https://github.com/publiclab/mapknitter-exporter/blob/bf375b6f2cb09070503f523d24ba803936144875/test/exporter_test.rb#L15-L39
+    @data,
     ''
   )
 
