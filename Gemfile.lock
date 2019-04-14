@@ -4,7 +4,7 @@ GIT
   branch: main
   glob: *.gemspec
   specs:
-    mapknitter-exporter (0.0.1)
+    mapknitter-exporter (0.0.2)
 
 GEM
   remote: https://rubygems.org/
