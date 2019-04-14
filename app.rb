@@ -27,19 +27,24 @@ get '/export' do
   @data = JSON.parse(@data)
 
   export = Export.new
-  
+
   @data = @data.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
 
+  scale = params[:scale] || @data[0]['cm_per_pixel']
+  map_id = params[:map_id] || @data[0]['map_id']
+  id = params[:id] || @data[0]['id']
+  key = params[:key] || ''
+
   MapKnitterExporter.run_export(
-    @data[0]['id'], # sources from first image
-    @data[0]['cm_per_pixel'],
+    id, # sources from first image
+    scale,
     export,
-    @data[0]['map_id'],
+    map_id,
     ".",
     @data,
-    ''
+    key
   )
 end
 
@@ -56,28 +61,25 @@ post '/export' do
 
   export = Export.new
 
+  @data = @data.keep_if do |w|
+    w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
+  end
+
+  scale = params[:scale] || @data[0]['cm_per_pixel']
+  map_id = params[:map_id] || @data[0]['map_id']
+  id = params[:id] || @data[0]['id']
+  key = params[:key] || ''
+
   MapKnitterExporter.run_export(
-    @data[0]['id'], # sources from first image
-    @data[0]['cm_per_pixel'],
+    id, # sources from first image
+    scale,
     export,
-    @data[0]['map_id'],
+    map_id,
     ".",
     @data,
-    ''
+    key
   )
-
-  # This will be the final version, once we reformat to give export.json top-level properties:
-#   MapKnitterExporter.run_export(
-#       @data['id'],
-#       @data['cm_per_pixel'],
-#       export,
-#       @data['user_id'], # formerly map_id
-#       ".", # root
-#       @data['images'],
-#       @data['google_api_key'] || '' # optional Google API key
-#     )
 end
-
 
 class Export
 
