@@ -16,11 +16,28 @@
 require "mapknitterExporter"
 require "sinatra"
 require "json"
+require "open-uri"
 
 get "/" do
   markdown :landing
 end
 
+get '/export' do
+  @data = open(params[:url]).read
+  @data = JSON.parse(@data)
+
+  export = Export.new
+  
+  MapKnitterExporter.run_export(
+    @data[0]['id'], # sources from first image
+    @data[0]['cm_per_pixel'],
+    export,
+    @data[0]['map_id'],
+    ".",
+    @data,
+    ''
+  )
+end
 
 post '/export' do
   unless params[:metadata] &&
@@ -34,19 +51,6 @@ post '/export' do
   String @data[0]['image_file_name']
 
   export = Export.new
-
-  # each image will be:
-  # {
-  #   "cm_per_pixel":4.99408,
-  #   "id":306187, // some unique id
-  #   "nodes":[ 
-  #     {"id":2593754,"lat":"-37.7664063648","lon":"144.9828654528"},
-  #     {"id":2593755,"lat":"-37.7650239004","lon":"144.9831980467"},
-  #     {"id":2593756,"lat":"-37.7652020107","lon":"144.9844533205"},
-  #     {"id":2593757,"lat":"-37.7665844718","lon":"144.9841207266"}
-  #   ],
-  #   "src":"https://s3.amazonaws.com/grassrootsmapping/warpables/306187/DJI_1207.JPG",
-  # }
 
   MapKnitterExporter.run_export(
     @data[0]['id'], # sources from first image
