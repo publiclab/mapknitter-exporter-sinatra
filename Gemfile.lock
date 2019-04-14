@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/publiclab/mapknitter-exporter
-  revision: b650b161e1670c4a111d53321ffe69aad0f29625
+  revision: bccf049957a9213b1b5d2d2d6049ef5cb9eb1628
   branch: main
   glob: *.gemspec
   specs:
