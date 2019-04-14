@@ -47,17 +47,27 @@ post '/export' do
   #   ],
   #   "src":"https://s3.amazonaws.com/grassrootsmapping/warpables/306187/DJI_1207.JPG",
   # }
-  
-  # simplified this because of https://github.com/publiclab/mapknitteexporter/pull/6... it won't work yet though
+
   MapKnitterExporter.run_export(
-      @data[0]['id'],
-      @data[0]['cm_per_pixel'],
-      export,
-      @data[0]['map_id'],
-      ".",
-      @data[0]['images'], # TODO: these images need a special format like https://github.com/publiclab/mapknitter-exporter/blob/bf375b6f2cb09070503f523d24ba803936144875/test/exporter_test.rb#L15-L39
-      ''
-    )
+    @data[0]['id'],
+    @data[0]['cm_per_pixel'],
+    export,
+    @data[0]['map_id'],
+    ".",
+    @data, # TODO: these images need a special format like https://github.com/publiclab/mapknitter-exporter/blob/bf375b6f2cb09070503f523d24ba803936144875/test/exporter_test.rb#L15-L39
+    ''
+  )
+
+  # This will be the final version, once we reformat to give export.json top-level properties:
+#   MapKnitterExporter.run_export(
+#       @data['id'],
+#       @data['cm_per_pixel'],
+#       export,
+#       @data['user_id'], # formerly map_id
+#       ".", # root
+#       @data['images'],
+#       @data['google_api_key'] || '' # optional Google API key
+#     )
 end
 
 
