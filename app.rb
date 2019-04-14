@@ -28,6 +28,10 @@ get '/export' do
 
   export = Export.new
   
+  @data = @data.keep_if do |w|
+    w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
+  end
+
   MapKnitterExporter.run_export(
     @data[0]['id'], # sources from first image
     @data[0]['cm_per_pixel'],
