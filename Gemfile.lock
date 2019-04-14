@@ -1,15 +1,8 @@
-GIT
-  remote: https://github.com/publiclab/mapknitter-exporter
-  revision: eed0644533b49c92bd398076e7feac4dbd8166f5
-  branch: main
-  glob: *.gemspec
-  specs:
-    mapknitter-exporter (0.0.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.3)
+    mapknitter-exporter (0.0.3)
     mustermann (1.0.3)
     rack (2.0.7)
     rack-protection (2.0.5)
@@ -40,10 +33,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  mapknitter-exporter!
+  mapknitter-exporter (~> 0.0.3)
   rack-test
   rspec
   sinatra
 
 BUNDLED WITH
-   1.13.6
+   1.17.3
