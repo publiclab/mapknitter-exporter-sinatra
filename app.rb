@@ -44,7 +44,8 @@ post '/export' do
   export.jpg
 end
 
-def run_export(export = Export.new)
+def run_export(data)
+  export = Export.new
   data = data.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
