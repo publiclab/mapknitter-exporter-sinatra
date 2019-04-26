@@ -26,7 +26,8 @@ get '/export' do
   @data = open(params[:url]).read
   @data = JSON.parse(@data)
 
-  run_export(@data)
+  export = run_export(@data)
+  export.jpg
 end
 
 post '/export' do
@@ -39,12 +40,11 @@ post '/export' do
   STDERR.puts "Uploading file, original name #{name.inspect}"
   @data = JSON.parse(tmpfile.read)
 
-  run_export(@data)
+  export = run_export(@data)
+  export.jpg
 end
 
-def run_export
-  export = Export.new
-
+def run_export(export = Export.new)
   data = data.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
