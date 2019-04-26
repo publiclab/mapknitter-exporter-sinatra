@@ -29,7 +29,7 @@ describe "Mapknitter Exporter" do
   end
   
   it "returns a JPG URL from the /export GET method" do
-    get "/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=2"
-    expect(last_response.body).to match(".jpg")
+    get "/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=30"
+    expect(last_response.body).to match("complete")
   end
 end
