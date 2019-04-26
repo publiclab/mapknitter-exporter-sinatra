@@ -27,6 +27,7 @@ get '/export' do
   @data = JSON.parse(@data)
 
   export = run_export(@data)
+  puts export.inspect
   export.jpg
 end
 
