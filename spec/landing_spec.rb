@@ -27,4 +27,9 @@ describe "Mapknitter Exporter" do
     get "/"
     expect(last_response.body).to match("Mapknitter Exporter")
   end
+  
+  if "test export GET method" do
+    get "/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=2"
+    expect(last_response.body).to match(".jpg")
+  end
 end
