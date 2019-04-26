@@ -22,6 +22,11 @@ get "/" do
   markdown :landing
 end
 
+# get files of form /warps/1/1.jpg
+get '/jpg' do
+  send_file File.join(settings.public_folder, "warps/#{params[:id]}/#{params[:id]}.jpg")
+end
+
 get '/export' do
   @data = open(params[:url]).read
   @data = JSON.parse(@data)
