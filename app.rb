@@ -23,11 +23,13 @@ get "/" do
 end
 
 get '/export' do
-  @data = open(params[:url]).read
-  @data = JSON.parse(@data)
+  @images_json = open(params[:url]).read
+  @images_json = JSON.parse(@images_json)
 
-  export = run_export(@data)
+  export = run_export(@images_json)
   puts export.inspect
+  puts ">>>>>>>>>>>>>>>>>"
+  puts export.jpg
   export.jpg
 end
 
@@ -39,21 +41,21 @@ post '/export' do
     return markdown :landing
   end
   STDERR.puts "Uploading file, original name #{name.inspect}"
-  @data = JSON.parse(tmpfile.read)
+  @images_json = JSON.parse(tmpfile.read)
 
-  export = run_export(@data)
+  export = run_export(@images_json)
   export.jpg
 end
 
-def run_export(data)
+def run_export(images_json)
   export = Export.new
-  data = data.keep_if do |w|
+  images_json = images_json.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
 
-  scale = params[:scale] || data[0]['cm_per_pixel']
-  map_id = params[:map_id] || data[0]['map_id']
-  id = params[:id] || data[0]['id']
+  scale = params[:scale] || images_json[0]['cm_per_pixel']
+  map_id = params[:map_id] || images_json[0]['map_id']
+  id = params[:id] || images_json[0]['id']
   key = params[:key] || ''
 
   MapKnitterExporter.run_export(
@@ -61,8 +63,7 @@ def run_export(data)
     scale,
     export,
     map_id,
-    ".",
-    data,
+    images_json,
     key
   )
 end
