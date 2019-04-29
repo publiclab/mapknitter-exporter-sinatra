@@ -42,15 +42,20 @@ get '/export' do
   id = params[:id] || @data[0]['id']
   key = params[:key] || ''
 
-  MapKnitterExporter.run_export(
-    id, # sources from first image
-    scale,
-    export,
-    map_id,
-    ".",
-    @data,
-    key
-  )
+  fork do
+    MapKnitterExporter.run_export(
+      id, # sources from first image
+      scale,
+      export,
+      map_id,
+      ".",
+      @data,
+      key
+    )
+  end
+
+  # Placeholder until real status.json. We need an export id (e.g. we could use the PID) to differentiate status.json.
+  "Export started! Check <a href='/tms/" + map_id.to_s + "/status.json'>status.json</a>"
 end
 
 post '/export' do
