@@ -24,7 +24,12 @@ end
 
 # get files of form /warps/1/1.jpg
 get '/jpg' do
-  send_file File.join(settings.public_folder, "warps/#{params[:id]}/#{params[:id]}.jpg")
+  send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
+end
+
+# Show current status
+get '/pid/:pid/status.json' do |n|
+  send_file "public/pid/#{params[:pid]}/status.json"
 end
 
 get '/export' do
@@ -42,7 +47,7 @@ get '/export' do
   id = params[:id] || @data[0]['id']
   key = params[:key] || ''
 
-  fork do
+  pid = fork do
     MapKnitterExporter.run_export(
       id, # sources from first image
       scale,
@@ -53,9 +58,9 @@ get '/export' do
       key
     )
   end
+  Process.detach(pid)
 
-  # Placeholder until real status.json. We need an export id (e.g. we could use the PID) to differentiate status.json.
-  "Export started! Check <a href='/tms/" + map_id.to_s + "/status.json'>status.json</a>"
+  "Export started! Check <a href='/pid/" + pid.to_s + "/status.json'>status.json</a>"
 end
 
 post '/export' do
@@ -80,24 +85,49 @@ post '/export' do
   id = params[:id] || @data[0]['id']
   key = params[:key] || ''
 
-  MapKnitterExporter.run_export(
-    id, # sources from first image
-    scale,
-    export,
-    map_id,
-    ".",
-    @data,
-    key
-  )
+  pid = fork do
+    MapKnitterExporter.run_export(
+      id, # sources from first image
+      scale,
+      export,
+      map_id,
+      ".",
+      @data,
+      key
+    )
+  end
+  Process.detach(pid)
+
+  "Export started! Check <a href='/pid/" + pid.to_s + "/status.json'>status.json</a>"
 end
 
 class Export
 
   attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel
 
+  def as_json(options={})
+    {
+      status: @status,
+      tms: @tms,
+      geotiff: @geotiff,
+      zip: @zip,
+      jpg: @jpg,
+      user_id: @user_id,
+      size: @size,
+      width: @width,
+      height: @height,
+      cm_per_pixel: @cm_per_pixel
+    }
+  end
+
+  def to_json(*options)
+    as_json(*options).to_json(*options)
+  end
+
   def save
     # need to save status.json file with above properties as strings
-    puts "saved"
+    FileUtils.mkpath 'public/pid/' + Process.pid.to_s
+    File.write 'public/pid/' + Process.pid.to_s + '/status.json', to_json({})
     return true
   end
 
