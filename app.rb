@@ -24,15 +24,18 @@ end
 
 # get files of form /warps/1/1.jpg
 get '/jpg' do
-  send_file File.join(settings.public_folder, "warps/#{params[:id]}/#{params[:id]}.jpg")
+  send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
+end
+
+# Show current status
+get '/pid/:pid/status.json' do |n|
+  send_file "public/pid/#{params[:pid]}/status.json"
 end
 
 get '/export' do
   @images_json = open(params[:url]).read
   @images_json = JSON.parse(@images_json)
-
   run_export(@images_json)
-  "Export started! Check status.json"
 end
 
 post '/export' do
@@ -46,11 +49,12 @@ post '/export' do
   @images_json = JSON.parse(tmpfile.read)
 
   run_export(@images_json)
-  "Export started! Check status.json"
 end
 
 def run_export(images_json)
   export = Export.new
+  export.export_id = Time.now.to_i
+
   images_json = images_json.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
@@ -60,23 +64,49 @@ def run_export(images_json)
   id = params[:id] || images_json[0]['id']
   key = params[:key] || ''
 
-  MapKnitterExporter.run_export(
-    id, # sources from first image
-    scale,
-    export,
-    map_id,
-    images_json,
-    key
-  )
+  pid = fork do
+    MapKnitterExporter.run_export(
+      id, # sources from first image
+      scale,
+      export,
+      map_id,
+      images_json,
+      key,
+      map_id # redundant, collection_id, see https://github.com/publiclab/mapknitter-exporter/issues/21
+    )
+  end
+  Process.detach(pid)
+  "/#{export.export_id}/status.json"
 end
 
 class Export
 
-  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel
+  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
+
+  def as_json(options={})
+    {
+      status: @status,
+      tms: @tms,
+      geotiff: @geotiff,
+      zip: @zip,
+      jpg: @jpg,
+      export_id: @export_id,
+      user_id: @user_id,
+      size: @size,
+      width: @width,
+      height: @height,
+      cm_per_pixel: @cm_per_pixel
+    }
+  end
+
+  def to_json(*options)
+    as_json(*options).to_json(*options)
+  end
 
   def save
     # need to save status.json file with above properties as strings
-    puts "saved"
+    FileUtils.mkpath 'public/' + export_id.to_s
+    File.write 'public/' + export_id.to_s + '/status.json', to_json({})
     return true
   end
 
