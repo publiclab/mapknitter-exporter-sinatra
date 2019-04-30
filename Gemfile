@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_flex_quickstart_dependencies]
 source "https://rubygems.org"
 
 gem "sinatra"
 gem "mapknitter-exporter", "~>0.0.3"
-# [END gae_flex_quickstart_dependencies]
+gem "fog-google"
+gem "fog-local"
 
 group :test do
   gem "rspec"

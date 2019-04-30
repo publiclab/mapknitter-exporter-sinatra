@@ -16,7 +16,11 @@
 require "mapknitterExporter"
 require "sinatra"
 require "json"
+require "yaml"
+require "erb"
 require "open-uri"
+require "fog/google.rb"
+require "fog/local.rb"
 
 get "/" do
   markdown :landing
@@ -90,9 +94,33 @@ class Export
 
   attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel
 
+  def initialize
+    # create a connection
+    connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+
+    # First, a place to contain the glorious details
+    @directory = connection.directories.create(
+      :key    => Process.pid.to_s,
+      :public => true
+    )
+  end
+
+
   def save
     # need to save status.json file with above properties as strings
+    @directory.files.create(
+      :key    => 'status.json',
+      :body   => @status,
+      :public => true
+    )
     puts "saved"
+    if @status=="complete"
+      @directory.files.create(
+        :key    => "output.jpg",
+        :body   => "jpg content placeholder",
+        :public => true
+      )
+    end
     return true
   end
 

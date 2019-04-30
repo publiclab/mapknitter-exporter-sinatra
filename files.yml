@@ -1,0 +1,4 @@
+:provider: <%= ENV['FOG_PROVIDER'] || 'local' %>
+:local_root: <%= ENV['FOG_LOCAL_ROOT'] || 'public' %>
+:google_storage_access_key_id: <%= ENV['GOOGLE_KEY_ID'] || '' %>
+:google_storage_secret_access_key: <%= ENV['GOOGLE_KEY'] || '' %>
