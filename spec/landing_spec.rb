@@ -30,6 +30,6 @@ describe "Mapknitter Exporter" do
   
   it "returns a JPG URL from the /export GET method" do
     get "/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=30"
-    expect(last_response.body).to match("started")
+    expect(last_response.body).to match("/pid/8/status.json")
   end
 end
