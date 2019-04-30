@@ -26,11 +26,8 @@ get '/export' do
   @images_json = open(params[:url]).read
   @images_json = JSON.parse(@images_json)
 
-  export = run_export(@images_json)
-  puts export.inspect
-  puts ">>>>>>>>>>>>>>>>>"
-  puts export.jpg
-  export.jpg
+  run_export(@images_json)
+  "Export started! Check status.json"
 end
 
 post '/export' do
@@ -43,8 +40,8 @@ post '/export' do
   STDERR.puts "Uploading file, original name #{name.inspect}"
   @images_json = JSON.parse(tmpfile.read)
 
-  export = run_export(@images_json)
-  export.jpg
+  run_export(@images_json)
+  "Export started! Check status.json"
 end
 
 def run_export(images_json)
