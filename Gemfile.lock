@@ -102,7 +102,7 @@ DEPENDENCIES
   fog-google
   fog-local
   mapknitter-exporter (~> 0.0.3)
-  nokogiri (= 1.10.0)
+  nokogiri
   rack-test
   rspec
   sinatra

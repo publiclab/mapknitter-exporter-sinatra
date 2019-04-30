@@ -14,11 +14,12 @@
 
 
 gem "sinatra"
-gem "fog-google"
-gem "fog-local"
+gem "nokogiri"
 
 source "https://rubygems.org"
 gem "mapknitter-exporter", "~>0.0.3"
+gem "fog-google"
+gem "fog-local"
 
 group :test do
   gem "rspec"
