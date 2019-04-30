@@ -16,7 +16,6 @@
 gem "sinatra"
 gem "nokogiri"
 
-source "https://rubygems.org"
 gem "mapknitter-exporter", "~>0.0.3"
 gem "fog-google"
 gem "fog-local"
