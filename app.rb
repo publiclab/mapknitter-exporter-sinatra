@@ -74,6 +74,7 @@ post '/export' do
   String @data[0]['image_file_name']
 
   export = Export.new
+  export.export_id = Time.now.to_i
 
   @data = @data.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
@@ -96,12 +97,12 @@ post '/export' do
     )
   end
   Process.detach(pid)
-  "/pid/#{pid}/status.json"
+  "/#{export.export_id}/status.json"
 end
 
 class Export
 
-  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel
+  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
 
   def as_json(options={})
     {
@@ -110,6 +111,7 @@ class Export
       geotiff: @geotiff,
       zip: @zip,
       jpg: @jpg,
+      export_id: @export_id,
       user_id: @user_id,
       size: @size,
       width: @width,
@@ -124,8 +126,8 @@ class Export
 
   def save
     # need to save status.json file with above properties as strings
-    FileUtils.mkpath 'public/pid/' + Process.pid.to_s
-    File.write 'public/pid/' + Process.pid.to_s + '/status.json', to_json({})
+    FileUtils.mkpath 'public/' + export_id.to_s
+    File.write 'public/' + export_id.to_s + '/status.json', to_json({})
     return true
   end
 
