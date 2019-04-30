@@ -33,21 +33,28 @@ get '/pid/:pid/status.json' do |n|
 end
 
 get '/export' do
-  @images_json = open(params[:url]).read
+  if params[:collection]
+    @images_json = params[:collection]
+  else
+    @images_json = open(params[:url]).read
+  end
   @images_json = JSON.parse(@images_json)
   run_export(@images_json)
 end
 
 post '/export' do
-  unless params[:metadata] &&
-       (tmpfile = params[:metadata][:tempfile]) &&
-       (name = params[:metadata][:filename])
-    @error = "No file selected"
-    return markdown :landing
+  if params[:collection]
+    @images_json = JSON.parse(params[:collection])
+  else
+    unless params[:metadata] &&
+         (tmpfile = params[:metadata][:tempfile]) &&
+         (name = params[:metadata][:filename])
+      @error = "No file selected"
+      return markdown :landing
+    end
+    STDERR.puts "Uploading file, original name #{name.inspect}"
+    @images_json = JSON.parse(tmpfile.read)
   end
-  STDERR.puts "Uploading file, original name #{name.inspect}"
-  @images_json = JSON.parse(tmpfile.read)
-
   run_export(@images_json)
 end
 
