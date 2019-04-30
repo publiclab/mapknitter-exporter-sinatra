@@ -33,33 +33,9 @@ get '/pid/:pid/status.json' do |n|
 end
 
 get '/export' do
-  @data = open(params[:url]).read
-  @data = JSON.parse(@data)
-
-  export = Export.new
-
-  @data = @data.keep_if do |w|
-    w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
-  end
-
-  scale = params[:scale] || @data[0]['cm_per_pixel']
-  map_id = params[:map_id] || @data[0]['map_id']
-  id = params[:id] || @data[0]['id']
-  key = params[:key] || ''
-
-  pid = fork do
-    MapKnitterExporter.run_export(
-      id, # sources from first image
-      scale,
-      export,
-      map_id,
-      ".",
-      @data,
-      key
-    )
-  end
-  Process.detach(pid)
-  "/pid/#{pid}/status.json"
+  @images_json = open(params[:url]).read
+  @images_json = JSON.parse(@images_json)
+  run_export(@images_json)
 end
 
 post '/export' do
@@ -70,19 +46,22 @@ post '/export' do
     return markdown :landing
   end
   STDERR.puts "Uploading file, original name #{name.inspect}"
-  @data = JSON.parse(tmpfile.read)
-  String @data[0]['image_file_name']
+  @images_json = JSON.parse(tmpfile.read)
 
+  run_export(@images_json)
+end
+
+def run_export(images_json)
   export = Export.new
   export.export_id = Time.now.to_i
 
-  @data = @data.keep_if do |w|
+  images_json = images_json.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
 
-  scale = params[:scale] || @data[0]['cm_per_pixel']
-  map_id = params[:map_id] || @data[0]['map_id']
-  id = params[:id] || @data[0]['id']
+  scale = params[:scale] || images_json[0]['cm_per_pixel']
+  map_id = params[:map_id] || images_json[0]['map_id']
+  id = params[:id] || images_json[0]['id']
   key = params[:key] || ''
 
   pid = fork do
@@ -91,9 +70,9 @@ post '/export' do
       scale,
       export,
       map_id,
-      ".",
-      @data,
-      key
+      images_json,
+      key,
+      map_id # redundant, collection_id, see https://github.com/publiclab/mapknitter-exporter/issues/21
     )
   end
   Process.detach(pid)
