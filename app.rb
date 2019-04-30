@@ -59,8 +59,7 @@ get '/export' do
     )
   end
   Process.detach(pid)
-
-  "Export started! Check <a href='/pid/" + pid.to_s + "/status.json'>status.json</a>"
+  "/pid/#{pid}/status.json"
 end
 
 post '/export' do
@@ -97,8 +96,7 @@ post '/export' do
     )
   end
   Process.detach(pid)
-
-  "Export started! Check <a href='/pid/" + pid.to_s + "/status.json'>status.json</a>"
+  "/pid/#{pid}/status.json"
 end
 
 class Export
