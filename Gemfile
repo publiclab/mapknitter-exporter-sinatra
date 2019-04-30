@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "https://rubygems.org"
 
 gem "sinatra"
-gem "mapknitter-exporter", "~>0.0.3"
 gem "fog-google"
 gem "fog-local"
-gem "nokogiri", "1.10.0" # follow debian
+
+source "https://rubygems.org"
+gem "mapknitter-exporter", "~>0.0.3"
 
 group :test do
   gem "rspec"
