@@ -92,10 +92,11 @@ end
 
 class Export
 
-  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
+  attr_accessor :status_url, :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
 
   def as_json(options={})
     {
+      status_url: @status_url,
       status: @status,
       tms: @tms,
       geotiff: @geotiff,
