@@ -16,9 +16,9 @@
 gem "sinatra"
 gem "nokogiri"
 
-gem "mapknitter-exporter", "~>0.0.3"
 gem "fog-google"
 gem "fog-local"
+gem "mapknitter-exporter", "~>1.0.2"
 
 group :test do
   gem "rspec"

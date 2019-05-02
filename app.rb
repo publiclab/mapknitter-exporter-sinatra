@@ -28,71 +28,91 @@ end
 
 # get files of form /warps/1/1.jpg
 get '/jpg' do
-  send_file File.join(settings.public_folder, "warps/#{params[:id]}/#{params[:id]}.jpg")
+  send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
+end
+
+# Show current status
+get '/pid/:pid/status.json' do |n|
+  send_file "public/pid/#{params[:pid]}/status.json"
 end
 
 get '/export' do
-  @data = open(params[:url]).read
-  @data = JSON.parse(@data)
-
-  export = Export.new
-
-  @data = @data.keep_if do |w|
-    w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
+  if params[:collection]
+    @images_json = params[:collection]
+  else
+    @images_json = open(params[:url]).read
   end
-
-  scale = params[:scale] || @data[0]['cm_per_pixel']
-  map_id = params[:map_id] || @data[0]['map_id']
-  id = params[:id] || @data[0]['id']
-  key = params[:key] || ''
-
-  MapKnitterExporter.run_export(
-    id, # sources from first image
-    scale,
-    export,
-    map_id,
-    ".",
-    @data,
-    key
-  )
+  @images_json = JSON.parse(@images_json)
+  run_export(@images_json)
 end
 
 post '/export' do
-  unless params[:metadata] &&
-       (tmpfile = params[:metadata][:tempfile]) &&
-       (name = params[:metadata][:filename])
-    @error = "No file selected"
-    return markdown :landing
+  if params[:collection]
+    @images_json = JSON.parse(params[:collection])
+  else
+    unless params[:metadata] &&
+         (tmpfile = params[:metadata][:tempfile]) &&
+         (name = params[:metadata][:filename])
+      @error = "No file selected"
+      return markdown :landing
+    end
+    STDERR.puts "Uploading file, original name #{name.inspect}"
+    @images_json = JSON.parse(tmpfile.read)
   end
-  STDERR.puts "Uploading file, original name #{name.inspect}"
-  @data = JSON.parse(tmpfile.read)
-  String @data[0]['image_file_name']
+  run_export(@images_json)
+end
 
+def run_export(images_json)
   export = Export.new
+  export.export_id = Time.now.to_i
 
-  @data = @data.keep_if do |w|
+  images_json = images_json.keep_if do |w|
     w['nodes'] && w['nodes'].length > 0 && w['cm_per_pixel'] && w['cm_per_pixel'].to_f > 0
   end
 
-  scale = params[:scale] || @data[0]['cm_per_pixel']
-  map_id = params[:map_id] || @data[0]['map_id']
-  id = params[:id] || @data[0]['id']
+  scale = params[:scale] || images_json[0]['cm_per_pixel']
+  map_id = params[:map_id] || images_json[0]['map_id']
+  id = params[:id] || images_json[0]['id']
   key = params[:key] || ''
 
-  MapKnitterExporter.run_export(
-    id, # sources from first image
-    scale,
-    export,
-    map_id,
-    ".",
-    @data,
-    key
-  )
+  pid = fork do
+    MapKnitterExporter.run_export(
+      id, # sources from first image
+      scale,
+      export,
+      map_id,
+      images_json,
+      key,
+      map_id # redundant, collection_id, see https://github.com/publiclab/mapknitter-exporter/issues/21
+    )
+  end
+  Process.detach(pid)
+  "/#{export.export_id}/status.json"
 end
 
 class Export
 
-  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel
+  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
+
+  def as_json(options={})
+    {
+      status: @status,
+      tms: @tms,
+      geotiff: @geotiff,
+      zip: @zip,
+      jpg: @jpg,
+      export_id: @export_id,
+      user_id: @user_id,
+      size: @size,
+      width: @width,
+      height: @height,
+      cm_per_pixel: @cm_per_pixel
+    }
+  end
+
+  def to_json(*options)
+    as_json(*options).to_json(*options)
+  end
 
   def initialize
     # create a connection
@@ -114,7 +134,7 @@ class Export
       :public => true
     )
     puts "saved"
-    if @status=="complete"
+    if @status == "complete"
       @directory.files.create(
         :key    => "output.jpg",
         :body   => "jpg content placeholder",
