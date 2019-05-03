@@ -32,8 +32,13 @@ get '/jpg' do
 end
 
 # Show current status
-get '/pid/:pid/status.json' do |n|
-  send_file "public/pid/#{params[:pid]}/status.json"
+get '/id/:export_id/status.json' do
+  connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+
+  # First, a place to contain the glorious details
+  directory = connection.directories.get("mapknitter-exports-warps")
+  stat = directory.files.get("#{params[:export_id]}/status.json")
+  stat.body
 end
 
 get '/export' do
@@ -87,7 +92,7 @@ def run_export(images_json)
     )
   end
   Process.detach(pid)
-  "/#{export.export_id}/status.json"
+  "/id/#{export.export_id}/status.json"
 end
 
 class Export
@@ -120,25 +125,22 @@ class Export
     connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
 
     # First, a place to contain the glorious details
-    @directory = connection.directories.create(
-      :key    => Process.pid.to_s,
-      :public => true
-    )
+    @directory = connection.directories.get("mapknitter-exports-warps")
   end
 
 
   def save
     # need to save status.json file with above properties as strings
     @directory.files.create(
-      :key    => 'status.json',
+      :key    => "#{@export_id}/status.json",
       :body   => @status,
       :public => true
     )
     puts "saved"
     if @status == "complete"
       @directory.files.create(
-        :key    => "output.jpg",
-        :body   => "jpg content placeholder",
+        :key    => "#{@export_id}/output.jpg",
+        :body   => @jpg,
         :public => true
       )
     end
