@@ -16,20 +16,43 @@
 require "mapknitterExporter"
 require "sinatra"
 require "json"
+require "yaml"
+require "erb"
 require "open-uri"
+require "fog/google.rb"
+require "fog/local.rb"
 
 get "/" do
   markdown :landing
 end
 
-# get files of form /warps/1/1.jpg
+# get files of form /warps/1/1.jpg (for tests)
 get '/jpg' do
   send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
 end
 
 # Show current status
-get '/pid/:pid/status.json' do |n|
-  send_file "public/pid/#{params[:pid]}/status.json"
+get '/id/:export_id/status.json' do
+  connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+
+  # First, a place to contain the glorious details
+  directory = connection.directories.get("mapknitter-exports-warps")
+  stat = directory.files.get("#{params[:export_id]}/status.json")
+  stat.body
+end
+#
+# Show current status
+get '/id/:export_id/:filename' do
+  connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+
+  # First, a place to contain the glorious details
+  directory = connection.directories.get("mapknitter-exports-warps")
+  stat = directory.files.get("#{params[:export_id]}/#{params[:filename]}")
+
+  if stat
+    public_url = "https://storage.cloud.google.com/mapknitter-exports-warps/#{params[:export_id]}/#{params[:filename]}"
+    redirect public_url
+  end
 end
 
 get '/export' do
@@ -83,15 +106,16 @@ def run_export(images_json)
     )
   end
   Process.detach(pid)
-  "/#{export.export_id}/status.json"
+  "/id/#{export.export_id}/status.json"
 end
 
 class Export
 
-  attr_accessor :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
+  attr_accessor :status_url, :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
 
   def as_json(options={})
     {
+      status_url: @status_url,
       status: @status,
       tms: @tms,
       geotiff: @geotiff,
@@ -110,10 +134,30 @@ class Export
     as_json(*options).to_json(*options)
   end
 
+  def initialize
+    # create a connection
+    connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+
+    # First, a place to contain the glorious details
+    @directory = connection.directories.get("mapknitter-exports-warps")
+  end
+
+
   def save
     # need to save status.json file with above properties as strings
-    FileUtils.mkpath 'public/' + export_id.to_s
-    File.write 'public/' + export_id.to_s + '/status.json', to_json({})
+    @directory.files.create(
+      :key    => "#{@export_id}/status.json",
+      :body   => @status,
+      :public => true
+    )
+    puts "saved"
+    if @status == "complete"
+      @directory.files.create(
+        :key    => "#{@export_id}/output.jpg",
+        :body   => @jpg,
+        :public => true
+      )
+    end
     return true
   end
 
