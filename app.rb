@@ -31,17 +31,7 @@ get '/jpg' do
   send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
 end
 
-# Show current status
-get '/id/:export_id/status.json' do
-  connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
-
-  # First, a place to contain the glorious details
-  directory = connection.directories.get("mapknitter-exports-warps")
-  stat = directory.files.get("#{params[:export_id]}/status.json")
-  stat.body
-end
-#
-# Show current status
+# Show files
 get '/id/:export_id/:filename' do
   connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
 
@@ -145,16 +135,21 @@ class Export
 
   def save
     # need to save status.json file with above properties as strings
+    if @directory.files.head("#{@export_id}/status.json")
+      stat = @directory.files.get("#{@export_id}/status.json")
+      stat.destroy
+    end
+
     @directory.files.create(
       :key    => "#{@export_id}/status.json",
       :body   => @status,
       :public => true
     )
-    puts "saved"
+    STDERR.puts "saved"
     if @status == "complete"
       @directory.files.create(
-        :key    => "#{@export_id}/output.jpg",
-        :body   => @jpg,
+        :key    => "#{@export_id}/#{@export_id}.jpg",
+        :body   => File.open(@jpg),
         :public => true
       )
     end
