@@ -26,7 +26,7 @@ get "/" do
   markdown :landing
 end
 
-# get files of form /warps/1/1.jpg
+# get files of form /warps/1/1.jpg (for tests)
 get '/jpg' do
   send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
 end
@@ -39,6 +39,20 @@ get '/id/:export_id/status.json' do
   directory = connection.directories.get("mapknitter-exports-warps")
   stat = directory.files.get("#{params[:export_id]}/status.json")
   stat.body
+end
+#
+# Show current status
+get '/id/:export_id/:filename' do
+  connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+
+  # First, a place to contain the glorious details
+  directory = connection.directories.get("mapknitter-exports-warps")
+  stat = directory.files.get("#{params[:export_id]}/#{params[:filename]}")
+
+  if stat
+    public_url = "https://storage.cloud.google.com/mapknitter-exports-warps/#{params[:export_id]}/#{params[:filename]}"
+    redirect public_url
+  end
 end
 
 get '/export' do
