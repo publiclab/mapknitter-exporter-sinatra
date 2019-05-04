@@ -85,6 +85,7 @@ def run_export(images_json)
   key = params[:key] || ''
 
   pid = fork do
+    settings.running_server = nil
     MapKnitterExporter.run_export(
       id, # sources from first image
       scale,
