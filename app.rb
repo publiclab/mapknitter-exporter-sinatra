@@ -137,7 +137,7 @@ class Export
   def save
     # need to save status.json file with above properties as strings
     if @directory.files.head("#{@export_id}/status.json")
-      sleep 1
+      sleep 2  # or we hit "Too many requests"
       stat = @directory.files.get("#{@export_id}/status.json")
       stat.destroy
     end
