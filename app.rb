@@ -144,16 +144,26 @@ class Export
 
     @directory.files.create(
       :key    => "#{@export_id}/status.json",
-      :body   => @status,
+      :body   => to_json,
       :public => true
     )
     STDERR.puts "saved"
+
+    # should run only if jpg completed:
     if @status == "complete"
       @directory.files.create(
         :key    => "#{@export_id}/#{@export_id}.jpg",
         :body   => File.open(@jpg),
         :public => true
       )
+    # elsif @status == "generating jpg" # tiles have been zipped
+    #   # save zip
+    # elsif @status == "zipping tiles" # tiles have been generated
+    #   # save tms
+    # elsif @status == "tiling" # images have been composited into single image
+    #   # save geotiff
+    # elsif @status == "compositing" # individual images have been distorted
+    #   # save individual images? (optional)
     end
     return true
   end
