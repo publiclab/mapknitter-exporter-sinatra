@@ -33,16 +33,12 @@ end
 
 # Show files
 get '/id/:export_id/:filename' do
-  connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+  connection = Fog::Storage.new(YAML.load(ERB.new(File.read('files.yml')).result))
 
-  # First, a place to contain the glorious details
   directory = connection.directories.get("mapknitter-exports-warps")
   stat = directory.files.get("#{params[:export_id]}/#{params[:filename]}")
 
-  if stat
-    public_url = "https://storage.cloud.google.com/mapknitter-exports-warps/#{params[:export_id]}/#{params[:filename]}"
-    redirect public_url
-  end
+  redirect stat.public_url
 end
 
 get '/export' do
@@ -80,20 +76,19 @@ def run_export(images_json)
   end
 
   scale = params[:scale] || images_json[0]['cm_per_pixel']
-  map_id = params[:map_id] || images_json[0]['map_id']
-  id = params[:id] || images_json[0]['id']
+  user_id = params[:user_id] || images_json[0]['user_id']
   key = params[:key] || ''
 
+  `mkdir public/warps`
   pid = fork do
     settings.running_server = nil
     MapKnitterExporter.run_export(
-      export.export_id,
+      user_id, # user_id, unused
       scale,
       export,
-      map_id,
+      export.export_id,
       images_json,
-      key,
-      map_id # redundant, collection_id, see https://github.com/publiclab/mapknitter-exporter/issues/21
+      key
     )
   end
   Process.detach(pid)
@@ -135,20 +130,6 @@ class Export
 
 
   def save
-    # need to save status.json file with above properties as strings
-    if @directory.files.head("#{@export_id}/status.json")
-      sleep 2  # or we hit "Too many requests"
-      stat = @directory.files.get("#{@export_id}/status.json")
-      stat.destroy
-    end
-
-    @directory.files.create(
-      :key    => "#{@export_id}/status.json",
-      :body   => to_json,
-      :public => true
-    )
-    STDERR.puts "saved status.json"
-
     if @status == "complete"
       save_file(@jpg, 'jpg', @export_id)
     elsif @status == "generating jpg" # tiles have been zipped
@@ -162,9 +143,26 @@ class Export
     # elsif @status == "compositing" # individual images have been distorted
     #   # save individual images? (optional)
     end
+
+    # need to save status.json file with above properties as strings
+    if @directory.files.head("#{@export_id}/status.json")
+      sleep 2  # or we hit "Too many requests"
+      stat = @directory.files.get("#{@export_id}/status.json")
+      # record a static URL for status.json:
+      @status_url = stat.public_url
+      stat.destroy
+    end
+
+    @directory.files.create(
+      :key    => "#{@export_id}/status.json",
+      :body   => to_json,
+      :public => true
+    )
+    STDERR.puts "saved status.json"
     return true
   end
-  
+
+  # TODO: save the static path instead of the sinatra-redirected path, into status.json 
   def save_file(path, extension, id)
     key = "#{id}/#{id}.#{extension}"
     file = @directory.files.create(
