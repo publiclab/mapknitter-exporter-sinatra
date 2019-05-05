@@ -32,4 +32,10 @@ describe "Mapknitter Exporter" do
     get "/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=30"
     expect(last_response.body).to match("/status.json") # we won't be able to get the exact Time.now.to_i
   end
+
+  #it "tests with mocked cloud upload" do
+  #  Fog.mock!
+  #  get "/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=30"
+  #end
+
 end
