@@ -31,19 +31,6 @@ get '/jpg' do
   send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
 end
 
-# status.json records:
-# http://export.mapknitter.org/public/warps/13015/13015-geo.tif
-# 
-# but this route says it should be at:
-# http://export.mapknitter.org/id/13015/13015-geo.tif
-# http://export.mapknitter.org/id/13015/13015.jpg
-#
-# it actually is at:
-# http://export.mapknitter.org/id/1557020467/1557020467.jpg
-#
-# ideally we want (but are OK with this redirect):
-# https://storage.cloud.google.com/mapknitter-exports-warps/13015/13015.jpg
-# 
 # Show files
 get '/id/:export_id/:filename' do
   connection = Fog::Storage.new(YAML.load(ERB.new(File.read('files.yml')).result))
