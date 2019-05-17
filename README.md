@@ -7,7 +7,7 @@ A minimal Sinatra app to run MapKnitter exports in the cloud, using the `mapknit
 
 ## Usage
 
-(note NOT https for now:) http://export.mapknitter.org/export?url=https://mapknitter.org/maps/ceres--2/warpables.json&scale=30
+(note NOT https for now:) http://export.mapknitter.org/export?url=https://mapknitter.org/maps/pvdtest/warpables.json&scale=30
 
 You can also run it as a POST or GET with a parameter called `collection` containing the JSON string.
 
