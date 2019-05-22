@@ -172,7 +172,6 @@ class Export
     return true
   end
 
-  # TODO: save the static path instead of the sinatra-redirected path, into status.json 
   def save_file(path, extension, id)
     key = "#{id}/#{id}.#{extension}"
     file = @directory.files.create(
