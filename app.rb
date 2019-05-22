@@ -26,11 +26,6 @@ get "/" do
   markdown :landing
 end
 
-# get files of form /warps/1/1.jpg (for tests)
-get '/jpg' do
-  send_file "public/warps/#{params[:id]}/#{params[:id]}.jpg"
-end
-
 # alt route to show files to follow mapknitter-exporter path conventions
 get '/public/warps/:export_id/:filename' do
   connection = Fog::Storage.new(YAML.load(ERB.new(File.read('files.yml')).result))
