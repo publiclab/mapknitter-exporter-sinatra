@@ -36,6 +36,11 @@ get '/public/warps/:export_id/:filename' do
   redirect stat.public_url  
 end
 
+# for testing
+get '/working/:id/:filename' do
+  send_file File.join(settings.public_folder, "warps/#{params[:id]}/#{params[:filename]}")
+end
+
 # Show files
 get '/id/:export_id/:filename' do
   connection = Fog::Storage.new(YAML.load(ERB.new(File.read('files.yml')).result))
