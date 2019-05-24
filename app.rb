@@ -107,7 +107,7 @@ end
 
 class Export
 
-  attr_accessor :status_url, :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id
+  attr_accessor :status_url, :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id, :start_time, :run_time, :gem_version
 
   def as_json(options={})
     {
@@ -122,6 +122,9 @@ class Export
       size: @size,
       width: @width,
       height: @height,
+      start_time: @start_time,
+      run_time: @run_time,
+      gem_version: Gem.loaded_specs['mapknitter-exporter'].version.to_s,
       cm_per_pixel: @cm_per_pixel
     }
   end
@@ -133,11 +136,15 @@ class Export
   def initialize
     # create a connection
     connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
+    start_time = Time.now
 
     # First, a place to contain the glorious details
     @directory = connection.directories.get("mapknitter-exports-warps")
   end
 
+  def run_time
+    Time.now - start_time
+  end
 
   def save
     if @status == "complete"
