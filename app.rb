@@ -136,14 +136,14 @@ class Export
   def initialize
     # create a connection
     connection = Fog::Storage.new( YAML.load(ERB.new(File.read('files.yml')).result) )
-    start_time = Time.now
+    @start_time = Time.now
 
     # First, a place to contain the glorious details
     @directory = connection.directories.get("mapknitter-exports-warps")
   end
 
   def run_time
-    Time.now - start_time
+    Time.now - @start_time
   end
 
   def save
