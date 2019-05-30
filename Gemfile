@@ -14,6 +14,7 @@
 
 
 gem "sinatra"
+gem "sinatra-cors"
 gem "nokogiri"
 
 gem "fog-google"
