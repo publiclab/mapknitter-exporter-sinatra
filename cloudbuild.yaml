@@ -1,10 +1,13 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/public-lab/mapknitter-exporter', '.']
+  args: ['build', 
+            '-t', 'gcr.io/public-lab/mapknitter-exporter:$SHORT_SHA',
+            '-t', 'gcr.io/public-lab/mapknitter-exporter:latest',
+            '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/public-lab/mapknitter-exporter']
 - name: 'gcr.io/cloud-builders/kubectl'
-  args: ['set', 'image', 'deployment/mapknitter-exporter-kubes', '*=gcr.io/public-lab/mapknitter-exporter']
+  args: ['set', 'image', 'deployment/mapknitter-exporter-kubes', '*=gcr.io/public-lab/mapknitter-exporter:$SHORT_SHA']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-east1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=mapknitter'
