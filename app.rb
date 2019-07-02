@@ -55,7 +55,7 @@ get '/id/:export_id/:filename' do
   directory = connection.directories.get("mapknitter-exports-warps")
   stat = directory.files.get("#{params[:export_id]}/#{params[:filename]}")
 
-  redirect stat.public_url
+  redirect stat.public_url + '?' + request.query_string
 end
 
 get '/export' do
