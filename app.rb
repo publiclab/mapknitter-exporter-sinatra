@@ -70,7 +70,11 @@ end
 
 post '/export' do
   if params[:collection]
-    @images_json = JSON.parse(params[:collection])
+    if params[:collection] == String
+      @images_json = JSON.parse(params[:collection]) 
+    else
+      @images_json = params[:collection]
+    end
   else
     unless params[:metadata] &&
          (tmpfile = params[:metadata][:tempfile]) &&
