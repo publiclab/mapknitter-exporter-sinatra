@@ -70,7 +70,7 @@ end
 
 post '/export' do
   if params[:collection]
-    if params[:collection] == String
+    if params[:collection].class == String
       @images_json = JSON.parse(params[:collection]) 
     else
       @images_json = params[:collection]
