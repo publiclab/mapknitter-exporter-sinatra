@@ -1,9 +1,30 @@
+language: ruby
+
 sudo: required
+
+dist: buster
+
+rvm:
+  - 2.4.6
+
 services:
   - docker
 
+cache:
+  directories:
+   - /usr/share
+   - /usr/bin
+   - vendor/.bundle
+
 install:
-    docker build . -t mapknitter-exporter:latest
+    - sudo ./scripts/install-deps.sh
+    - bundle install --path vendor/.bundle
 
 script:
     docker run mapknitter-exporter bundle exec rspec
+jobs:
+  include:
+    - name: "Exporter Tests"
+      script: bundle exec rspec
+    - name: "Docker Build"
+      script: docker build . -t lib-mapknitter-exporter:latest
