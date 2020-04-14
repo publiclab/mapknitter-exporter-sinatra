@@ -12,16 +12,12 @@ services:
 
 cache:
   directories:
-   - /usr/share
-   - /usr/bin
    - vendor/.bundle
 
 install:
     - sudo ./scripts/install-deps.sh
     - bundle install --path vendor/.bundle
 
-script:
-    docker run mapknitter-exporter bundle exec rspec
 jobs:
   include:
     - name: "Exporter Tests"

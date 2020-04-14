@@ -54,13 +54,15 @@ GEM
     mini_portile2 (2.4.0)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    mustermann (1.0.3)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
     nokogiri (1.10.0)
       mini_portile2 (~> 2.4.0)
     os (1.0.1)
+    pandoc-ruby (2.1.4)
     public_suffix (3.0.3)
     rack (2.0.7)
-    rack-protection (2.0.5)
+    rack-protection (2.0.8.1)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -82,18 +84,19 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
+    ruby2_keywords (0.0.2)
     signet (0.11.0)
       addressable (~> 2.3)
       faraday (~> 0.9)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sinatra (2.0.5)
+    sinatra (2.0.8.1)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.5)
+      rack-protection (= 2.0.8.1)
       tilt (~> 2.0)
     sinatra-cors (1.1.0)
-    tilt (2.0.9)
+    tilt (2.0.10)
     uber (0.1.0)
 
 PLATFORMS
@@ -104,9 +107,10 @@ DEPENDENCIES
   fog-local
   mapknitter-exporter (~> 1.0.9)
   nokogiri
+  pandoc-ruby
   rack-test
   rspec
-  sinatra
+  sinatra (= 2.0.8.1)
   sinatra-cors
 
 BUNDLED WITH

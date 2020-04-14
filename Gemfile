@@ -13,9 +13,10 @@
 # limitations under the License.
 
 
-gem "sinatra"
+gem "sinatra", "2.0.8.1"
 gem "sinatra-cors"
 gem "nokogiri"
+gem "pandoc-ruby"
 
 gem "fog-google"
 gem "fog-local"
