@@ -1,4 +1,4 @@
-Dir.glob('../app/controllers/*.rb').each { |file| require file }
+require_relative "../app/controllers/export_controller.rb"
 
 class Export
   attr_accessor :status_url, :status, :tms, :geotiff, :zip, :jpg, :user_id, :size, :width, :height, :cm_per_pixel, :export_id, :start_time, :run_time, :gem_version

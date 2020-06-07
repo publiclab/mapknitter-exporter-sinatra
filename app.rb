@@ -1,1 +1,1 @@
-require "./lib/export.rb"
+require_relative "lib/export.rb"
