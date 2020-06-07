@@ -16,6 +16,7 @@
 gem "sinatra", "2.0.8.1"
 gem "sinatra-cors"
 gem "nokogiri"
+gem "kramdown"
 
 gem "fog-google"
 gem "fog-local"

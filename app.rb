@@ -14,6 +14,7 @@
 # limitations under the License.
 
 require "mapknitterExporter"
+require "kramdown"
 require "sinatra"
 require "sinatra/cors"
 
