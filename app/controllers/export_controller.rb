@@ -6,7 +6,7 @@ end
 
 # alt route to show files to follow mapknitter-exporter path conventions
 get '/public/warps/:export_id/:filename' do
-  connection = Fog::Storage.new(YAML.safe_load(ERB.new(File.read('files.yml')).result))
+  connection = Fog::Storage.new(YAML.safe_load(ERB.new(File.read('files.yml')).result, [Symbol]))
 
   directory = connection.directories.get("mapknitter-exports-warps")
   stat = directory.files.get("#{params[:export_id]}/#{params[:filename]}")
@@ -21,7 +21,7 @@ end
 
 # Show files
 get '/id/:export_id/:filename' do
-  connection = Fog::Storage.new(YAML.safe_load(ERB.new(File.read('files.yml')).result))
+  connection = Fog::Storage.new(YAML.safe_load(ERB.new(File.read('files.yml')).result, [Symbol]))
 
   directory = connection.directories.get("mapknitter-exports-warps")
   stat = directory.files.get("#{params[:export_id]}/#{params[:filename]}")
@@ -30,7 +30,7 @@ get '/id/:export_id/:filename' do
 end
 
 get '/export' do
-  @images_json = params[:collection] || URI.open(params[:url]).read
+  @images_json = params[:collection] || open(params[:url]).read
   @images_json = JSON.parse(@images_json)
   run_export(@images_json)
 end
@@ -67,7 +67,7 @@ def run_export(images_json)
   user_id = params[:user_id] || images_json[0]['user_id']
   key = params[:key] || ''
 
-  `mkdir public/warps`
+  `mkdir -p public/warps`
   pid = fork do
     settings.running_server = nil
     MapKnitterExporter.run_export(

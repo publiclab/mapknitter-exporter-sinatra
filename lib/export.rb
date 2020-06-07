@@ -29,7 +29,7 @@ class Export
 
   def initialize
     # create a connection
-    connection = Fog::Storage.new(YAML.safe_load(ERB.new(File.read('files.yml')).result))
+    connection = Fog::Storage.new(YAML.safe_load(ERB.new(File.read('files.yml')).result, [Symbol]))
     @start_time = Time.now
 
     # First, a place to contain the glorious details
