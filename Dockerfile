@@ -1,10 +1,10 @@
 # Debian base
-FROM debian:buster
+FROM ruby:2.4.6-buster
 
 MAINTAINER Sebastian Silva <sebastian@fuentelibre.org>
 
 # Install the application.
-RUN apt-get update -qq && apt-get install -y gdal-bin ruby imagemagick ruby-sinatra ruby-kramdown ruby-nokogiri bundler git python-gdal
+RUN apt-get update -qq && apt-get install -y gdal-bin imagemagick ruby-sinatra ruby-kramdown ruby-nokogiri git python-gdal
 
 # Configure ImageMagick
 COPY ./nolimit.xml /etc/ImageMagick-6/policy.xml
