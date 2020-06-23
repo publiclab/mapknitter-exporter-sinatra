@@ -1,4 +1,5 @@
 # Copyright 2015 Google, Inc
+# Copyright 2019 Public Lab
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,18 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-gem "sinatra"
-gem "sinatra-cors"
-gem "nokogiri"
-gem "kramdown"
+require "mapknitterExporter"
+require "sinatra"
+require "sinatra/cors"
 
-gem "fog-google"
-gem "fog-local"
-gem "mapknitter-exporter", "~> 1.0.9"
+set :allow_origin, "*"
+set :allow_methods, "GET,HEAD,POST"
+set :allow_headers, "content-type,if-modified-since"
+set :expose_headers, "location,link"
 
-group :test do
-  gem "rubocop", "~> 0.70.0"
-  gem "rubocop-performance"
-  gem "rspec"
-  gem "rack-test"
-end
+require "json"
+require "yaml"
+require "erb"
+require "open-uri"
+require "fog/google.rb"
+require "fog/local.rb"
