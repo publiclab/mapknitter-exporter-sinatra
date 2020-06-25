@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 gem "sinatra"
 gem "sinatra-cors"
 gem "nokogiri"
+gem "kramdown"
 
 gem "fog-google"
 gem "fog-local"
 gem "mapknitter-exporter", "~> 1.0.9"
 
 group :test do
-  gem 'rubocop', '~> 0.70.0'
-  gem 'rubocop-performance'
+  gem "rubocop", "~> 0.70.0"
+  gem "rubocop-performance"
   gem "rspec"
   gem "rack-test"
 end
