@@ -23,6 +23,6 @@ jobs:
     - name: "Exporter Tests"
       script: bundle exec rspec
     - name: "Rubocop Build"
-      script: rubocop
+      script: bundle exec rubocop
     - name: "Docker Build"
       script: docker build . -t lib-mapknitter-exporter:latest
