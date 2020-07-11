@@ -30,7 +30,7 @@ get '/id/:export_id/:filename' do
 end
 
 get '/export' do
-  @images_json = params[:collection] || open(params[:url]).read
+  @images_json = params[:collection] || open(params[:url]).read # rubocop:disable Security/Open
   @images_json = JSON.parse(@images_json)
   run_export(@images_json)
 end
