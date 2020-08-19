@@ -1,8 +1,8 @@
 FROM gitpod/workspace-full
 
 # Install dependencies.
-RUN apt-get update -qq && \
-    apt-get install -y \
+RUN sudo apt-get update -qq && \
+    sudo apt-get install -y \
                     gdal-bin \
                     ruby \
                     zlib1g-dev \
@@ -11,4 +11,4 @@ RUN apt-get update -qq && \
                     ruby-kramdown \
                     ruby-nokogiri \
                     bundler \
-                    python-gdal
+                    gdal-bin
