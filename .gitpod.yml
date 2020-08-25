@@ -1,0 +1,18 @@
+image:
+    file: .gitpod.dockerfile
+ports:
+    - port: 3000
+      onOpen: open-preview
+tasks:
+    - init: bundle install
+      command: bundle exec ruby app.rb -o 0.0.0.0 -p 3000 
+        
+github:
+    prebuilds:
+        branches: true
+        pullRequests: true
+        pullRequestsFromForks: true
+        addCheck: true
+        addComment: true
+        addBadge: false
+        addLabel: false

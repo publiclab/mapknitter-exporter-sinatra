@@ -2,6 +2,9 @@
 
 A minimal Sinatra app to run MapKnitter exports in the cloud, using the `mapknitter-exporter` gem.
 
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/publiclab/mapknitter-exporter-sinatra/)
+
+
 [![Build Status](https://travis-ci.com/publiclab/mapknitter-exporter-sinatra.svg)](https://travis-ci.com/publiclab/mapknitter-exporter-sinatra)
 
 * Gem: https://github.com/publiclab/mapknitter-exporter
