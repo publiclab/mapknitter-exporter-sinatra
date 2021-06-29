@@ -22,7 +22,7 @@ gem "fog-local"
 gem "mapknitter-exporter", "~> 1.0.9"
 
 group :test do
-  gem "rubocop", "~> 0.88.0"
+  gem "rubocop", "~> 1.18.0"
   gem "rubocop-performance"
   gem "rspec"
   gem "rack-test"
