@@ -60,6 +60,7 @@ GEM
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    nio4r (2.5.8)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     os (1.1.0)
@@ -67,6 +68,8 @@ GEM
     parser (2.7.1.4)
       ast (~> 2.4.1)
     public_suffix (4.0.5)
+    puma (5.5.2)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-protection (2.0.8.1)
       rack
@@ -132,6 +135,7 @@ DEPENDENCIES
   kramdown
   mapknitter-exporter (~> 1.0.9)
   nokogiri
+  puma
   rack-test
   rspec
   rubocop (~> 0.88.0)
