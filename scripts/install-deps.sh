@@ -3,7 +3,7 @@
 apt-get update -qq && \
 apt-get install -y \
         gdal-bin \
-        python-gdal \
+        python3-gdal \
         ruby-kramdown \
         ruby-nokogiri \
         imagemagick

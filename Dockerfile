@@ -25,6 +25,7 @@ WORKDIR /app
 
 # Install production dependencies.
 ENV BUNDLE_FROZEN=true
+RUN gem install bundler
 RUN bundle install
 
 CMD bundle exec ruby app.rb -o 0.0.0.0 -p $PORT
