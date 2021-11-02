@@ -59,10 +59,10 @@ class Export
       save_file(@zip, 'zip', @export_id)
     elsif @status == "zipping tiles" # tiles have been generated
       # save tms
-      Dir.chdir('public/tms/#{@export_id}')
+      Dir.chdir("public/tms/#{@export_id}")
       Dir['**/*.{jpg,png,html,xml}'].each do |path|
         key = "#{@export_id}/tms/#{path}"
-        file = @directory.files.create(
+        @directory.files.create(
           key: key,
           body: File.open(path),
           public: true
