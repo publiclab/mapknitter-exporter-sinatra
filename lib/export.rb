@@ -57,8 +57,18 @@ class Export
     elsif @status == "generating jpg" # tiles have been zipped
       # save zip
       save_file(@zip, 'zip', @export_id)
-      # elsif @status == "zipping tiles" # tiles have been generated
-      #   # save tms
+    elsif @status == "zipping tiles" # tiles have been generated
+      # save tms
+      Dir.chdir('public/tms/#{@export_id}')
+      Dir['**/*.{jpg,png,html,xml}'].each do |path|
+        key = "#{@export_id}/tms/#{path}"
+        file = @directory.files.create(
+          key: key,
+          body: File.open(path),
+          public: true
+        )
+        Dir.chdir('../../../')
+      end
     elsif @status == "tiling" # images have been composited into single image
       # save geotiff
       save_file(@geotiff, 'tif', @export_id)
