@@ -13,18 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "mapknitterExporter"
-require "sinatra"
-require "sinatra/cors"
-
 set :allow_origin, "*"
 set :allow_methods, "GET,HEAD,POST"
 set :allow_headers, "content-type,if-modified-since"
 set :expose_headers, "location,link"
-
-require "json"
-require "yaml"
-require "erb"
-require "open-uri"
-require "fog/google.rb"
-require "fog/local.rb"
