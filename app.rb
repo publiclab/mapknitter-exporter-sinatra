@@ -1,1 +1,11 @@
+require "mapknitterExporter"
+require "sinatra"
+require "sinatra/cors"
+require "json"
+require "yaml"
+require "erb"
+require "open-uri"
+require "fog/google.rb"
+require "fog/local.rb"
+
 require_relative "lib/export.rb"
