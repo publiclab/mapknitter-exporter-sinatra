@@ -69,8 +69,8 @@ class Export
             public: true
           )
         end
-        Dir.chdir('../../../')
       end
+      Dir.chdir('../../../')
     elsif @status == "tiling" # images have been composited into single image
       # save geotiff
       save_file(@geotiff, 'tif', @export_id)
