@@ -62,11 +62,13 @@ class Export
       Dir.chdir("public/tms/#{@export_id}")
       Dir['**/*.{jpg,png,html,xml}'].each do |path|
         key = "#{@export_id}/tms/#{path}"
-        @directory.files.create(
-          key: key,
-          body: File.open(path),
-          public: true
-        )
+        if File.exists?(path)
+          @directory.files.create(
+            key: key,
+            body: File.open(path),
+            public: true
+          )
+        end
         Dir.chdir('../../../')
       end
     elsif @status == "tiling" # images have been composited into single image
