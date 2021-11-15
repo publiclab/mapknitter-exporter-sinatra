@@ -21,7 +21,7 @@ gem "puma"
 
 gem "fog-google"
 gem "fog-local"
-gem "mapknitter-exporter", "~> 1.0.9"
+gem "mapknitter-exporter", "~> 1.0.11"
 
 group :test do
   gem "rubocop", "~> 0.88.0"
