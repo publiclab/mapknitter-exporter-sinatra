@@ -1,4 +1,4 @@
-require "mapknitterExporter"
+require "mapknitter_exporter"
 require "sinatra"
 require "sinatra/cors"
 require "json"
