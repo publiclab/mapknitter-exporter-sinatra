@@ -47,7 +47,7 @@ GEM
       signet (~> 0.14)
     httpclient (2.8.3)
     jwt (2.2.1)
-    kramdown (2.3.0)
+    kramdown (2.3.2)
       rexml
     mapknitter-exporter (1.0.12)
     memoist (0.16.2)
@@ -82,7 +82,7 @@ GEM
       declarative-option (< 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
